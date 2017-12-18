@@ -107,11 +107,10 @@ static inline T atoi_positive(char const* p, char const* e, bool& valid) noexcep
 // be set to false. if the parsed value is less or greater than what 
 // type T can store without truncation, "valid" will also be set to 
 // false.
-// this function will always read *p, so it expects p to be != e.
 // this function will not modify errno.
 template<typename T>
 static inline T atoi(char const* p, std::size_t length, bool& valid) noexcept {
-  if (length == 0) {
+  if (ATOI_UNLIKELY(length == 0)) {
     valid = false;
     return T();
   }

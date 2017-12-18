@@ -45,6 +45,36 @@ if (valid) {
 }
 ```
 
+The library contains the following functions:
+```cpp
+// function to convert the string value between p 
+// (inclusive) and e (exclusive) into a number value of type T
+//
+// the input string will always be interpreted as a base-10 number.
+// expects the input string to contain only the digits '0' to '9'. an
+// optional '+' or '-' sign is allowed too. 
+// if any other character is found, the output parameter "valid" will 
+// be set to false. if the parsed value is less or greater than what 
+// type T can store without truncation, "valid" will also be set to 
+// false.
+// this function will not modify errno.
+template<typename T>
+static inline T atoi(char const* p, std::size_t length, bool& valid) noexcept;
+
+// low-level worker function to convert the string value between p 
+// (inclusive) and e (exclusive) into a positive number value of type T
+//
+// the input string will always be interpreted as a base-10 number.
+// expects the input string to contain only the digits '0' to '9'. 
+// if any other character is found, the output parameter "valid" will 
+// be set to false. if the parsed value is greater than what type T can
+// store without truncation, "valid" will also be set to false.
+// this function will always read *p, so it expects p to be != e.
+// this function will not modify errno.
+template<typename T>
+static inline T atoi_positive(char const* p, char const* e, bool& valid) noexcept;
+```
+
 Benchmark
 ---------
 
@@ -65,3 +95,41 @@ mkdir -p build
 build/benchmark/bench
 ```
 
+Benchmark results from local laptop (Linux x86-64):
+```
+500000000 iterations of std::stoull, string '7' took 4781 ms
+500000000 iterations of strtoull, string '7' took 4476 ms
+500000000 iterations of jsteemann::atoi, string '7' took 1007 ms
+500000000 iterations of jsteemann::atoi_positive, string '7' took 863 ms
+
+500000000 iterations of std::stoull, string '874' took 6493 ms
+500000000 iterations of strtoull, string '874' took 6231 ms
+500000000 iterations of jsteemann::atoi, string '874' took 1973 ms
+500000000 iterations of jsteemann::atoi_positive, string '874' took 1730 ms
+
+500000000 iterations of std::stoull, string '123456' took 9156 ms
+500000000 iterations of strtoull, string '123456' took 8834 ms
+500000000 iterations of jsteemann::atoi, string '123456' took 3281 ms
+500000000 iterations of jsteemann::atoi_positive, string '123456' took 4004 ms
+
+500000000 iterations of std::stoull, string '12345654666646' took 16336 ms
+500000000 iterations of strtoull, string '12345654666646' took 15909 ms
+500000000 iterations of jsteemann::atoi, string '12345654666646' took 6632 ms
+500000000 iterations of jsteemann::atoi_positive, string '12345654666646' took 8636 ms
+
+500000000 iterations of std::stoull, string '16323949897939569634' took 21711 ms
+500000000 iterations of strtoull, string '16323949897939569634' took 21513 ms
+500000000 iterations of jsteemann::atoi, string '16323949897939569634' took 13792 ms
+500000000 iterations of jsteemann::atoi_positive, string '16323949897939569634' took 14681 ms
+```
+
+Tests
+-----
+
+To run the library's tests locally, execute the following commands:
+
+```bash
+mkdir -p build
+(cd build && cmake ..)
+build/tests/tests
+```
