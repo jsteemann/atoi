@@ -28,21 +28,10 @@ namespace jsteemann {
 // this function will not modify errno.
 template<typename T>
 inline T atoi_negative_unchecked(char const* p, char const* e) noexcept {
-  if (ATOI_UNLIKELY(p == e)) {
-    return T();
-  }
-  
   T result = 0;
-  char c = *p;
-
-  do {
-    result *= 10;
-    c -= '0';
-    ++p;
-    result -= c;
-    c = *p;
-  } while (p < e);
-
+  while (p != e) {
+    result = (result << 1) + (result << 3) - (*(p++) - '0');
+  }
   return result;
 }
   
@@ -57,20 +46,10 @@ inline T atoi_negative_unchecked(char const* p, char const* e) noexcept {
 // this function will not modify errno.
 template<typename T>
 inline T atoi_positive_unchecked(char const* p, char const* e) noexcept {
-  if (ATOI_UNLIKELY(p == e)) {
-    return T();
-  }
-
   T result = 0;
-  char c = *p;
-
-  do {
-    result *= 10;
-    c -= '0';
-    ++p;
-    result += c;
-    c = *p;
-  } while (p < e);
+  while (p != e) {
+    result = (result << 1) + (result << 3) + *(p++) - '0';
+  }
 
   return result;
 }
