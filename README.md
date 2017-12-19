@@ -45,7 +45,7 @@ Use cases
 
 This library's string-to-integer conversion functionality is not as flexible 
 as the one provided by other string-to-integer functions, e.g. `std::stoull`
-from the standard library or `strtoull` from `stdlib.h`. 
+from the standard library or `std::strtoull`.
 
 This library sacrifices some of the generality for performance. It is also 
 optimized for valid input strings, and provides special functions that do not 
@@ -136,8 +136,8 @@ Benchmark
 ---------
 
 To compare the performance of this library and the standard library's
-`std::stoull` function and plus stdlib.h's `strtoull` function, there is
-a benchmark executable included.
+`std::stoull` and `std::strtoull` functions, there is a benchmark executable
+included.
 
 It can be built and run as follows:
 ```bash
@@ -149,35 +149,35 @@ build/benchmark/bench
 
 Benchmark results from local laptop (Linux x86-64):
 ```
-500000000 iterations of std::stoull, string '7' took 4773 ms
-500000000 iterations of strtoull, string '7' took 4478 ms
-500000000 iterations of jsteemann::atoi, string '7' took 976 ms
-500000000 iterations of jsteemann::atoi_positive, string '7' took 871 ms
-500000000 iterations of jsteemann::atoi_positive_unchecked, string '7' took 888 ms
+500000000 iterations of std::stoull, string '7' took 4792 ms
+500000000 iterations of std::strtoull, string '7' took 4482 ms
+500000000 iterations of jsteemann::atoi, string '7' took 1027 ms
+500000000 iterations of jsteemann::atoi_positive, string '7' took 870 ms
+500000000 iterations of jsteemann::atoi_positive_unchecked, string '7' took 873 ms
 
-500000000 iterations of std::stoull, string '874' took 6502 ms
-500000000 iterations of strtoull, string '874' took 6230 ms
-500000000 iterations of jsteemann::atoi, string '874' took 2215 ms
-500000000 iterations of jsteemann::atoi_positive, string '874' took 1747 ms
-500000000 iterations of jsteemann::atoi_positive_unchecked, string '874' took 1312 ms
+500000000 iterations of std::stoull, string '874' took 6495 ms
+500000000 iterations of std::strtoull, string '874' took 6241 ms
+500000000 iterations of jsteemann::atoi, string '874' took 2268 ms
+500000000 iterations of jsteemann::atoi_positive, string '874' took 2222 ms
+500000000 iterations of jsteemann::atoi_positive_unchecked, string '874' took 1092 ms
 
-500000000 iterations of std::stoull, string '123456' took 9151 ms
-500000000 iterations of strtoull, string '123456' took 8892 ms
-500000000 iterations of jsteemann::atoi, string '123456' took 3902 ms
-500000000 iterations of jsteemann::atoi_positive, string '123456' took 3081 ms
-500000000 iterations of jsteemann::atoi_positive_unchecked, string '123456' took 2312 ms
+500000000 iterations of std::stoull, string '123456' took 9172 ms
+500000000 iterations of std::strtoull, string '123456' took 8887 ms
+500000000 iterations of jsteemann::atoi, string '123456' took 3945 ms
+500000000 iterations of jsteemann::atoi_positive, string '123456' took 3883 ms
+500000000 iterations of jsteemann::atoi_positive_unchecked, string '123456' took 1956 ms
 
-500000000 iterations of std::stoull, string '12345654666646' took 16269 ms
-500000000 iterations of strtoull, string '12345654666646' took 16006 ms
-500000000 iterations of jsteemann::atoi, string '12345654666646' took 8928 ms
-500000000 iterations of jsteemann::atoi_positive, string '12345654666646' took 6542 ms
-500000000 iterations of jsteemann::atoi_positive_unchecked, string '12345654666646' took 4698 ms
+500000000 iterations of std::stoull, string '12345654666646' took 16413 ms
+500000000 iterations of std::strtoull, string '12345654666646' took 16026 ms
+500000000 iterations of jsteemann::atoi, string '12345654666646' took 9061 ms
+500000000 iterations of jsteemann::atoi_positive, string '12345654666646' took 8527 ms
+500000000 iterations of jsteemann::atoi_positive_unchecked, string '12345654666646' took 4154 ms
 
-500000000 iterations of std::stoull, string '16323949897939569634' took 21766 ms
-500000000 iterations of strtoull, string '16323949897939569634' took 21524 ms
-500000000 iterations of jsteemann::atoi, string '16323949897939569634' took 16579 ms
-500000000 iterations of jsteemann::atoi_positive, string '16323949897939569634' took 13696 ms
-500000000 iterations of jsteemann::atoi_positive_unchecked, string '16323949897939569634' took 6742 ms
+500000000 iterations of std::stoull, string '16323949897939569634' took 21772 ms
+500000000 iterations of std::strtoull, string '16323949897939569634' took 21537 ms
+500000000 iterations of jsteemann::atoi, string '16323949897939569634' took 16677 ms
+500000000 iterations of jsteemann::atoi_positive, string '16323949897939569634' took 15597 ms
+500000000 iterations of jsteemann::atoi_positive_unchecked, string '16323949897939569634' took 6203 ms
 ```
 
 Tests
