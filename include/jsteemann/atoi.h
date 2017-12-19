@@ -18,6 +18,93 @@
 namespace jsteemann {
 
 // low-level worker function to convert the string value between p 
+// (inclusive) and e (exclusive) into a negative number value of type T,
+// without validation of the input string - use this only for trusted input!
+//
+// the input string will always be interpreted as a base-10 number.
+// expects the input string to contain only the digits '0' to '9'. 
+// there is no validation of the input string, and overflow or underflow
+// of the result value will not be detected.
+// this function will not modify errno.
+template<typename T>
+inline T atoi_negative_unchecked(char const* p, char const* e) noexcept {
+  if (ATOI_UNLIKELY(p == e)) {
+    return T();
+  }
+  
+  T result = 0;
+  char c = *p;
+
+  do {
+    result *= 10;
+    c -= '0';
+    ++p;
+    result -= c;
+    c = *p;
+  } while (p < e);
+
+  return result;
+}
+  
+// low-level worker function to convert the string value between p 
+// (inclusive) and e (exclusive) into a positive number value of type T,
+// without validation of the input string - use this only for trusted input!
+//
+// the input string will always be interpreted as a base-10 number.
+// expects the input string to contain only the digits '0' to '9'. 
+// there is no validation of the input string, and overflow or underflow
+// of the result value will not be detected.
+// this function will not modify errno.
+template<typename T>
+inline T atoi_positive_unchecked(char const* p, char const* e) noexcept {
+  if (ATOI_UNLIKELY(p == e)) {
+    return T();
+  }
+
+  T result = 0;
+  char c = *p;
+
+  do {
+    result *= 10;
+    c -= '0';
+    ++p;
+    result += c;
+    c = *p;
+  } while (p < e);
+
+  return result;
+}
+
+// function to convert the string value between p 
+// (inclusive) and e (exclusive) into a number value of type T, without
+// validation of the input string - use this only for trusted input!
+//
+// the input string will always be interpreted as a base-10 number.
+// expects the input string to contain only the digits '0' to '9'. an
+// optional '+' or '-' sign is allowed too. 
+// there is no validation of the input string, and overflow or underflow
+// of the result value will not be detected.
+// this function will not modify errno.
+template<typename T>
+inline T atoi_unchecked(char const* p, char const* e) noexcept {
+  if (ATOI_UNLIKELY(p == e)) {
+    return T();
+  }
+
+  if (*p == '-') {
+    if (!std::is_signed<T>::value) {
+      return T();
+    }
+    return atoi_negative_unchecked<T>(++p, e);
+  } 
+  if (ATOI_UNLIKELY(*p == '+')) {
+    ++p;
+  }
+  
+  return atoi_positive_unchecked<T>(p, e);
+}
+
+// low-level worker function to convert the string value between p 
 // (inclusive) and e (exclusive) into a negative number value of type T
 //
 // the input string will always be interpreted as a base-10 number.
@@ -25,10 +112,14 @@ namespace jsteemann {
 // if any other character is found, the output parameter "valid" will 
 // be set to false. if the parsed value is less than what type T can
 // store without truncation, "valid" will also be set to false.
-// this function will always read *p, so it expects p to be != e.
 // this function will not modify errno.
 template<typename T>
-static inline T atoi_negative(char const* p, char const* e, bool& valid) noexcept {
+inline T atoi_negative(char const* p, char const* e, bool& valid) noexcept {
+  if (ATOI_UNLIKELY(p == e)) {
+    valid = false;
+    return T();
+  }
+  
   constexpr T cutoff = (std::numeric_limits<T>::min)() / 10;
   constexpr char cutlim = -((std::numeric_limits<T>::min)() % 10);
   T result = 0;
@@ -65,10 +156,14 @@ static inline T atoi_negative(char const* p, char const* e, bool& valid) noexcep
 // if any other character is found, the output parameter "valid" will 
 // be set to false. if the parsed value is greater than what type T can
 // store without truncation, "valid" will also be set to false.
-// this function will always read *p, so it expects p to be != e.
 // this function will not modify errno.
 template<typename T>
-static inline T atoi_positive(char const* p, char const* e, bool& valid) noexcept {
+inline T atoi_positive(char const* p, char const* e, bool& valid) noexcept {
+  if (ATOI_UNLIKELY(p == e)) {
+    valid = false;
+    return T();
+  }
+
   constexpr T cutoff = (std::numeric_limits<T>::max)() / 10;
   constexpr char cutlim = (std::numeric_limits<T>::max)() % 10;
   T result = 0;
@@ -109,29 +204,21 @@ static inline T atoi_positive(char const* p, char const* e, bool& valid) noexcep
 // false.
 // this function will not modify errno.
 template<typename T>
-static inline T atoi(char const* p, std::size_t length, bool& valid) noexcept {
-  if (ATOI_UNLIKELY(length == 0)) {
+inline T atoi(char const* p, char const* e, bool& valid) noexcept {
+  if (ATOI_UNLIKELY(p == e)) {
     valid = false;
     return T();
   }
 
-  char const* e = p + length;
   if (*p == '-') {
     if (!std::is_signed<T>::value) {
       valid = false;
       return T();
     }
-    if (ATOI_UNLIKELY(++p == e)) {
-      valid = false;
-      return T();
-    }
-    
-    return atoi_negative<T>(p, e, valid);
-  } else if (*p == '+') {
-    if (ATOI_UNLIKELY(++p == e)) {
-      valid = false;
-      return T();
-    }
+    return atoi_negative<T>(++p, e, valid);
+  } 
+  if (ATOI_UNLIKELY(*p == '+')) {
+    ++p;
   }
   
   return atoi_positive<T>(p, e, valid);

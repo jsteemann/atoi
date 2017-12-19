@@ -56,7 +56,7 @@ int main() {
     volatile unsigned long long total = 0;
     for (std::size_t i = 0; i < n; ++i) {
       bool valid;
-      auto result = jsteemann::atoi<unsigned long long>(value.data(), value.size(), valid);
+      auto result = jsteemann::atoi<unsigned long long>(value.data(), value.data() + value.size(), valid);
       // in here so compiler does not optimize it away
       total += result;
     }
@@ -77,12 +77,25 @@ int main() {
   };
   
   
+  // using jsteemann::atoi_positive_unchecked
+  auto func5 = [n, &value]() {
+    volatile unsigned long long total = 0;
+    for (std::size_t i = 0; i < n; ++i) {
+      auto result = jsteemann::atoi_positive_unchecked<unsigned long long>(value.data(), value.data() + value.size());
+      // in here so compiler does not optimize it away
+      total += result;
+    }
+    return total;
+  };
+  
+  
   // use a very short value for starting 
   value = "7";
   (void) measure(std::to_string(n) + " iterations of std::stoull, string '" + value + "'", func1);
   (void) measure(std::to_string(n) + " iterations of strtoull, string '" + value + "'", func2);
   (void) measure(std::to_string(n) + " iterations of jsteemann::atoi, string '" + value + "'", func3);
   (void) measure(std::to_string(n) + " iterations of jsteemann::atoi_positive, string '" + value + "'", func4);
+  (void) measure(std::to_string(n) + " iterations of jsteemann::atoi_positive_unchecked, string '" + value + "'", func5);
   std::cout << std::endl;
   
   
@@ -92,6 +105,7 @@ int main() {
   (void) measure(std::to_string(n) + " iterations of strtoull, string '" + value + "'", func2);
   (void) measure(std::to_string(n) + " iterations of jsteemann::atoi, string '" + value + "'", func3);
   (void) measure(std::to_string(n) + " iterations of jsteemann::atoi_positive, string '" + value + "'", func4);
+  (void) measure(std::to_string(n) + " iterations of jsteemann::atoi_positive_unchecked, string '" + value + "'", func5);
   std::cout << std::endl;
     
 
@@ -101,6 +115,7 @@ int main() {
   (void) measure(std::to_string(n) + " iterations of strtoull, string '" + value + "'", func2);
   (void) measure(std::to_string(n) + " iterations of jsteemann::atoi, string '" + value + "'", func3);
   (void) measure(std::to_string(n) + " iterations of jsteemann::atoi_positive, string '" + value + "'", func4);
+  (void) measure(std::to_string(n) + " iterations of jsteemann::atoi_positive_unchecked, string '" + value + "'", func5);
   std::cout << std::endl;
   
   
@@ -110,6 +125,7 @@ int main() {
   (void) measure(std::to_string(n) + " iterations of strtoull, string '" + value + "'", func2);
   (void) measure(std::to_string(n) + " iterations of jsteemann::atoi, string '" + value + "'", func3);
   (void) measure(std::to_string(n) + " iterations of jsteemann::atoi_positive, string '" + value + "'", func4);
+  (void) measure(std::to_string(n) + " iterations of jsteemann::atoi_positive_unchecked, string '" + value + "'", func5);
   std::cout << std::endl;
   
   
@@ -119,5 +135,6 @@ int main() {
   (void) measure(std::to_string(n) + " iterations of strtoull, string '" + value + "'", func2);
   (void) measure(std::to_string(n) + " iterations of jsteemann::atoi, string '" + value + "'", func3);
   (void) measure(std::to_string(n) + " iterations of jsteemann::atoi_positive, string '" + value + "'", func4);
+  (void) measure(std::to_string(n) + " iterations of jsteemann::atoi_positive_unchecked, string '" + value + "'", func5);
   std::cout << std::endl;
 }

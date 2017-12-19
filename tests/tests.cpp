@@ -8,19 +8,24 @@
 template<typename T>
 static void test(bool shouldBeValid, std::string const& value) {
   bool valid;
-  T result = jsteemann::atoi<T>(value.c_str(), value.size(), valid);
+  T result = jsteemann::atoi<T>(value.c_str(), value.c_str() + value.size(), valid);
   ASSERT_EQ(shouldBeValid, valid);
   if (shouldBeValid) {
     ASSERT_EQ(value, std::to_string(result));
+    T result2 = jsteemann::atoi_unchecked<T>(value.c_str(), value.c_str() + value.size());
+    ASSERT_EQ(value, std::to_string(result2));
   }
 }
 
 template<typename T>
 static void test(T expected, std::string const& value) {
   bool valid;
-  T result = jsteemann::atoi<T>(value.c_str(), value.size(), valid);
+  T result = jsteemann::atoi<T>(value.c_str(), value.c_str() + value.size(), valid);
   ASSERT_TRUE(valid);
   ASSERT_EQ(expected, result);
+  
+  T result2 = jsteemann::atoi_unchecked<T>(value.c_str(), value.c_str() + value.size());
+  ASSERT_EQ(expected, result2);
 }
 
 TEST(atoiTest, testStrangeNumbers) {
