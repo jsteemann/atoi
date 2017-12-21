@@ -30,13 +30,17 @@ good performance:
 * the library functions are optimized for valid input, i.e. strings that 
   contain only the digits '0' to '9' (with an optional '+' or '-' sign in 
   front). This is also true for the validating functions
+* the library will not handle leading whitespace in the input string. 
+  input strings with leading or trailing whitespace are simply considered 
+  invalid. The same is true for input strings containing non-integer
+  numbers
 * the library functions will not modify `errno` in any way, nor will they
   throw any exceptions
 * the library functions will not allocate any memory on the heap
 
 In contrast to other common string-to-integer functions, the functions
 of this library do not require null-terminated input strings. An input
-string is delimited simply by a start pointer (`char const* p`) and end 
+string is delimited simply by a start pointer (`char const* p`) and an end 
 pointer (`char const* e`) into its data. All library functions guarantee
 to only read memory between `p` (inclusive) and `e` (exclusive).
 
